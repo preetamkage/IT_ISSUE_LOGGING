@@ -21,29 +21,25 @@ Technologies Used
 
 
 
-Project Structure
-ANUDIP1/
-│
-├── src/
-│ ├── db/
-│ │ └── DBConnection.java
-│ ├── dto/
-│ │ └── Issue.java
-│ ├── dao/
-│ │ └── IssueDAO.java
-│ ├── daoimpl/
-│ │ └── IssueDAOImpl.java
-│ ├── service/
-│ │ └── IssueService.java
-│ └── main/
-│ └── MainApp.java
-│
-├── lib/
-│ └── mysql-connector-j-8.0.33.jar
-│
-├── bin/
-├── .vscode/
-│ └── settings.json
+ANUDIP1
+├── src
+│   ├── db
+│   │   └── DBConnection.java
+│   ├── dto
+│   │   └── Issue.java
+│   ├── dao
+│   │   └── IssueDAO.java
+│   ├── daoimpl
+│   │   └── IssueDAOImpl.java
+│   ├── service
+│   │   └── IssueService.java
+│   └── main
+│       └── MainApp.java
+├── lib
+│   └── mysql-connector-j-8.0.33.jar
+├── bin
+├── .vscode
+│   └── settings.json
 └── README.md
 
 
