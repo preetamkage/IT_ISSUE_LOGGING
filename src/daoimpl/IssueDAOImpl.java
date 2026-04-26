@@ -4,54 +4,98 @@ import dao.IssueDAO;
 import db.DBConnection;
 import dto.Issue;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * IssueDAOImpl - Concrete JDBC implementation of IssueDAO.
+ *
+ * Required MySQL table:
+ * -----------------------------------------------------------------
+ * CREATE TABLE issues (
+ *     id                INT           AUTO_INCREMENT PRIMARY KEY,
+ *     employee_name     VARCHAR(100)  NOT NULL,
+ *     department        VARCHAR(100)  NOT NULL,
+ *     issue_description TEXT          NOT NULL,
+ *     date_logged       TIMESTAMP     DEFAULT CURRENT_TIMESTAMP
+ * );
+ * -----------------------------------------------------------------
+ */
 public class IssueDAOImpl implements IssueDAO {
 
+    // ---------------------------------------------------------------- addIssue
     @Override
     public void addIssue(Issue issue) {
-        try {
-            Connection con = DBConnection.getConnection();
-
-            String sql =
-                "INSERT INTO issues (employee_name, department, issue_description, status) VALUES (?, ?, ?, ?)";
-            PreparedStatement ps = con.prepareStatement(sql);
+        String sql = "INSERT INTO issues (employee_name, department, issue_description) VALUES (?, ?, ?)";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, issue.getEmployeeName());
             ps.setString(2, issue.getDepartment());
-            ps.setString(3, issue.getDescription());
-            ps.setString(4, issue.getStatus());
-
+            ps.setString(3, issue.getIssueDescription());
             ps.executeUpdate();
-            con.close();
 
-            System.out.println("✅ Issue logged successfully");
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to add issue: " + e.getMessage(), e);
         }
     }
 
+    // ------------------------------------------------------------- getAllIssues
     @Override
-    public void viewIssues() {
-        try {
-            Connection con = DBConnection.getConnection();
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM issues");
+    public List<Issue> getAllIssues() {
+        List<Issue> issues = new ArrayList<>();
+        String sql = "SELECT id, employee_name, department, issue_description, date_logged " +
+                     "FROM issues ORDER BY id DESC";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                System.out.println("---------------------------");
-                System.out.println("Issue ID   : " + rs.getInt("issue_id"));
-                System.out.println("Employee  : " + rs.getString("employee_name"));
-                System.out.println("Department: " + rs.getString("department"));
-                System.out.println("Issue     : " + rs.getString("issue_description"));
-                System.out.println("Status    : " + rs.getString("status"));
+                issues.add(new Issue(
+                        rs.getInt("id"),
+                        rs.getString("employee_name"),
+                        rs.getString("department"),
+                        rs.getString("issue_description"),
+                        rs.getString("date_logged")
+                ));
             }
-            con.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to fetch issues: " + e.getMessage(), e);
+        }
+        return issues;
+    }
+
+    // ------------------------------------------------------------- deleteIssue
+    @Override
+    public boolean deleteIssue(int id) {
+        String sql = "DELETE FROM issues WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to delete issue: " + e.getMessage(), e);
+        }
+    }
+
+    // ------------------------------------------------------------- updateIssue
+    @Override
+    public boolean updateIssue(int id, String newDescription) {
+        String sql = "UPDATE issues SET issue_description = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, newDescription);
+            ps.setInt(2, id);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to update issue: " + e.getMessage(), e);
         }
     }
 }
