@@ -1,109 +1,189 @@
-Command Line Based IT Issue Log Management System
+# 📌 IT Issue Logging System
 
-Project Overview
-The Command Line Based IT Issue Log Management Systemis a Java-based backend application that allows users to log and view IT-related issues using a command-line interface.  
-The system uses a MySQL database to store issue details and follows a layered architecture to ensure clean separation of concerns.
+A desktop-based **Java Swing + MySQL** application to log, manage, and track IT issues through a structured multi-screen GUI.
 
-This project is designed to demonstrate core backend concepts such as database connectivity, CRUD operations, and structured project design.
+---
 
- Objectives
-- To provide a simple command-line system for logging IT issues
-- To store and retrieve issue data using a MySQL database
-- To implement a clean layered architecture using Java
-- To understand JDBC and database connectivity
+## 🚀 Features
 
-Technologies Used
-- Java
-- MySQL
-- JDBC (MySQL Connector/J)
-- VS Code
-- Git & GitHub
+* Add new IT issues
+* View all issues in table format
+* Update issue description
+* Delete issues by ID
+* Dashboard-based navigation
+* MySQL integration using JDBC
 
+---
 
+## 🧱 Tech Stack
 
-ANUDIP1
-├── src
-│   ├── db
-│   │   └── DBConnection.java
-│   ├── dto
-│   │   └── Issue.java
-│   ├── dao
-│   │   └── IssueDAO.java
-│   ├── daoimpl
-│   │   └── IssueDAOImpl.java
-│   ├── service
-│   │   └── IssueService.java
-│   └── main
-│       └── MainApp.java
-├── lib
+* Java (Swing)
+* JDBC
+* MySQL
+
+---
+
+## 📁 Project Structure
+
+```
+IT_ISSUE_LOGGING/
+│
+├── src/        → Contains all Java source files (.java)
+│   ├── dao/
+│   ├── daoimpl/
+│   ├── db/
+│   ├── dto/
+│   ├── service/
+│   ├── main/
+│   └── ui/
+│
+├── out/        → Contains compiled files (.class)
+│
+├── lib/        → External libraries
 │   └── mysql-connector-j-8.0.33.jar
-├── bin
-├── .vscode
-│   └── settings.json
+│
+├── setup.sql
+├── run.bat
+├── run.sh
 └── README.md
+```
 
+---
 
+## 🗄️ Database Setup (Run once)
 
- Database Details
+### 1. Start MySQL
 
- Database Name
-it_issue_db
+```
+mysql -u root -p
+```
 
+### 2. Create Database & Table
 
-Table Structure
-sql
-CREATE TABLE issues (
-    issue_id INT AUTO_INCREMENT PRIMARY KEY,
-    employee_name VARCHAR(50),
-    department VARCHAR(50),
-    issue_description VARCHAR(200),
-    status VARCHAR(20)
+```sql
+CREATE DATABASE IF NOT EXISTS issue_logger;
+USE issue_logger;
+
+CREATE TABLE IF NOT EXISTS issues (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    employee_name VARCHAR(100),
+    department VARCHAR(100),
+    issue_description TEXT,
+    date_logged TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+```
 
+### 3. Exit
 
-Features
-Log IT issues with employee details
-View all logged IT issues
-Command-line based interaction
-Uses MySQL for persistent storage
-Clean separation using DAO, DTO, and Service layers
+```
+exit;
+```
 
+---
 
- How to Compile and Run
-Step 1: Compile (from src folder)
-javac -d ..\bin db\DBConnection.java dto\Issue.java dao\IssueDAO.java daoimpl\IssueDAOImpl.java service\IssueService.java main\MainApp.java
-Step 2: Run (from bin folder)
-java -cp ".;..\lib\mysql-connector-j-8.0.33.jar" main.MainApp
-Sample Output
-1. Log IT Issue
-2. View Issues
-3. Exit
-   
-Enter choice:
+## ⚙️ Configuration
 
- Architecture Explanation
-DTO (Data Transfer Object): Represents issue data
-DAO (Data Access Object): Defines database operations
-DAO Implementation: Implements SQL logic
-Service Layer: Handles business logic
-Main Class: Provides CLI interface to users
-DBConnection: Manages database connectivity
+Update database credentials in:
 
-Advantages
-Simple and easy to understand
-Real-world IT support use case
-Follows standard backend architecture
-Suitable for academic and lab submission
+```
+src/db/DBConnection.java
+ 
+```
 
- Future Enhancements
-Update and close issues
-Add priority levels
-User authentication
-Web or GUI interface
+Modify the following fields:
 
- Conclusion
-This project successfully demonstrates a command-line based IT Issue Log Management System using Java and MySQL. It provides hands-on experience with JDBC, layered architecture, and backend development fundamentals.
+```
+private static final String USER = "root";          // Your MySQL username
+private static final String PASSWORD = "your_password"; // Your MySQL password
+```
 
- Author
+### 📌 Notes
+
+* `issue_logger` → must match your database name
+* `root` → replace if using a different MySQL user
+* `your_password` → set your actual MySQL password
+
+  
+
+---
+
+## ▶️ How to Run
+
+### 1. Navigate to project
+
+```
+cd D:\IT_ISSUE_LOGGING
+```
+
+### 2. Clean old build
+
+```
+Get-ChildItem -Recurse -Filter "*.class" | Remove-Item -Force
+Remove-Item -Recurse -Force out
+New-Item -ItemType Directory -Name out
+```
+
+### 3. Compile project
+
+```
+javac -encoding UTF-8 -cp ".;lib/mysql-connector-j-8.0.33.jar" -d out src/dto/*.java src/dao/*.java src/db/*.java src/daoimpl/*.java src/service/*.java src/ui/*.java src/main/*.java
+```
+
+### 4. Run application
+
+```
+java -cp ".;out;lib/mysql-connector-j-8.0.33.jar" main.MainApp
+```
+
+---
+
+## 🎯 Application Flow
+
+1. Dashboard opens
+2. Choose operation:
+
+   * Add Issue
+   * View Issues
+   * Update Issue
+   * Delete Issue
+3. Perform action via separate screens
+
+---
+
+## 🧪 Verification
+
+After adding data via GUI:
+
+```
+mysql -u root -p
+USE issue_logger;
+SELECT * FROM issues;
+```
+
+---
+
+## ⚠️ Notes
+
+* Ensure MySQL server is running
+* Ensure correct DB credentials
+* `src/` contains `.java` files
+* `out/` contains compiled `.class` files
+* Always recompile after code changes
+
+---
+
+## 🚀 Future Enhancements
+
+* Search/filter issues
+* Status tracking (OPEN/CLOSED)
+* Authentication system
+* Modern UI (sidebar layout)
+
+---
+
+## 👨‍💻 Author
+
 Preetam Kage
+CSE – 6th Sem
 
+---

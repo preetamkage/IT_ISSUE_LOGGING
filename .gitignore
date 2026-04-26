@@ -1,11 +1,23 @@
-# Compiled class files
+# Compiled files
+out/
 bin/
+*.class
 
-# VS Code Java cache
-.settings/
-.classpath
-.project
+# Logs
+*.log
 
 # OS files
 .DS_Store
 Thumbs.db
+
+# IDE files
+.vscode/
+.settings/
+.classpath
+.project
+
+# Temporary files
+*.tmp
+
+# Environment files
+*.env
